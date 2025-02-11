@@ -82,13 +82,28 @@ public class MainActivity extends AppCompatActivity {
     public void setPassword(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置密码");
-        builder.setMessage("请输入新密码：");
+        builder.setMessage("请输入新密码，设置为空将关闭密码。\n\n如果密码开关状态切换（即从开到关或从关到开），请刷新首页，以便更新网页表单。");
 
         final EditText input = new EditText(this);
         builder.setView(input);
 
         builder.setPositiveButton("确定", (dialog, which) -> {
             final String text = input.getText().toString();
+            if (text.isEmpty()) {
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                builder2.setTitle("确定要关闭密码吗？");
+                builder2.setMessage("如果关闭密码，任何知道该手机IP地址的人都可以访问手机上的短信。请谨慎操作。");
+
+                builder2.setPositiveButton("是", (dialog2, which2) -> {
+                    password = "";
+                    Toast.makeText(this, "密码已关闭", Toast.LENGTH_SHORT).show();
+                });
+                builder2.setNegativeButton("否", (dialog2, which2) -> {
+                    Toast.makeText(this, "密码未更改", Toast.LENGTH_SHORT).show();
+                });
+                builder2.show();
+                return;
+            }
             password = text;
             Toast.makeText(this, "新密码已设置：" + text, Toast.LENGTH_SHORT).show();
         });
